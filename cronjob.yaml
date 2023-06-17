@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: k6-cronjob
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: k6
+              image: loadimpact/k6:latest
+              command: ["k6", "run", "--out", "json=/test-results/results.json", "/test-scripts/test.js"]
+              volumeMounts:
+                - name: test-script
+                  mountPath: /test-scripts
+                - name: results-volume
+                  mountPath: /test-results
+          restartPolicy: OnFailure
+          volumes:
+            - name: test-script
+              hostPath:
+                path: /home/n/projects/k6k8/k6-in-k8s/test-scripts
+            - name: results-volume
+              persistentVolumeClaim:
+                claimName: results-pvc
+  successfulJobsHistoryLimit: 1
+
+

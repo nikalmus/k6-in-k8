@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: k6-scripts
+data:
+  test.js: |-
+    {{ .Files.Get "/home/n/projects/k6k8/k6-in-k8s/test-scripts/test.js" }}
+
